@@ -11,20 +11,26 @@ function [text] = convertASCIIBitmapToText(bitmap)
     % Michael Gapczynski
     %---------------------------------------------------------------
     
+    nBits = 7;
+    
     [~, cols] = size(bitmap);
-    if mod(cols, 7) ~=0
+    if mod(cols, nBits) ~=0
         error('The bitmap is not properly formatted with whole 7-bit units in each row');
     end
     
     % Reshape into binary row vectors
-    bASCII = reshape(bitmap', 7, numel(bitmap)/7)';
+    bASCII = reshape(bitmap', nBits, numel(bitmap)/nBits)';
     
     % Remove any extra 0s in the last row of the bitmap
     lastRow = find(sum(bASCII, 2), 1, 'last');
     bASCII = bASCII(1:lastRow, :);
     
     % Convert to characters
-    dASCII = bi2de(bASCII);
-    text = char(dASCII)';
+    dASCII = zeros(1, lastRow);
+    base2 = 2.^(nBits-1:-1:0);
+    for i = 1:lastRow
+        dASCII(i) = sum(bASCII(i,:).*base2);
+    end
+    text = char(dASCII);
 end
 
