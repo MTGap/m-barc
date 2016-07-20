@@ -10,13 +10,20 @@ function [bitmap] = convertTextToASCIIBitmap(text, maxCols)
     % Michael Gapczynski
     %----------------------------------------------------------
     
-    if mod(maxCols, 7) ~= 0
+    nBits = 7;
+    
+    if mod(maxCols, nBits) ~= 0
         error('Maximum number of columns has to be divisible by 7');
     end
     
     % Convert to binary
     dASCII = double(text);
-    bASCII = de2bi(dASCII);
+    bASCII = zeros([size(dASCII) 0]);
+    nDims = ndims(dASCII)+1;
+    for iBit = nBits:-1:1
+        bASCII = cat(nDims, bASCII, bitget(dASCII, iBit));
+    end
+    bASCII = reshape(bASCII, numel(dASCII), nBits);
  
     % Calculate the size to make the bitmap as square as possible
     n = numel(bASCII);
