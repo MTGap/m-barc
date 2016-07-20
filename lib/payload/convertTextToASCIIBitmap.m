@@ -18,12 +18,8 @@ function [bitmap] = convertTextToASCIIBitmap(text, maxCols)
     
     % Convert to binary
     dASCII = double(text);
-    bASCII = zeros([size(dASCII) 0]);
-    nDims = ndims(dASCII)+1;
-    for iBit = nBits:-1:1
-        bASCII = cat(nDims, bASCII, bitget(dASCII, iBit));
-    end
-    bASCII = reshape(bASCII, numel(dASCII), nBits);
+    lookupTable = cell2mat(arrayfun(@(i)bitget((0:2^nBits - 1)', nBits+1-i), 1:nBits, 'UniformOutput', 0));
+    bASCII = lookupTable(dASCII(:)+1,:);
  
     % Calculate the size to make the bitmap as square as possible
     n = numel(bASCII);
