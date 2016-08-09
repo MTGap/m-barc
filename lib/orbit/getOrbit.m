@@ -1,4 +1,4 @@
-function [t, pos, vel] = getOrbit(hA, hP, inc, w, bigOmega, m0, dt)
+function [t, pos, vel, nu] = getOrbit(hA, hP, inc, w, bigOmega, m0, dt)
     % Calculate the satellite's position and velocity of the specified orbit
     % for the provided time step
     %
@@ -44,6 +44,9 @@ function [t, pos, vel] = getOrbit(hA, hP, inc, w, bigOmega, m0, dt)
     % Preallocate space
     pos = zeros(Lt, 3);
     vel = zeros(Lt, 3);
+    nu = zeros(Lt, 1);
+    
+    eSqrtPlusMinus = sqrt((1+e)/(1-e));
 
     % Tolerance for Newton's method iterations
     eps = 1e-10;
@@ -77,6 +80,10 @@ function [t, pos, vel] = getOrbit(hA, hP, inc, w, bigOmega, m0, dt)
         vel(i,1) = r11*xdot+r12*ydot;
         vel(i,2) = r21*xdot+r22*ydot;
         vel(i,3) = r31*xdot+r32*ydot;
+        
+        % True anomaly (radians)
+        nu(i) = 2*atan(eSqrtPlusMinus*tan(bigE/2));    
     end
+    % Add 2pi if negative
+    nu = mod(nu, 2*pi);
 end
-
