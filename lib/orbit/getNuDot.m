@@ -1,9 +1,9 @@
 function [nudot] = getNuDot(nu, dt)
-	% Calculate the rate of change of true anomaly
-   	%
-   	% nu: True anomaly (radians)
-   	% dt: Time step (s)
-   	%
+    % Calculate the rate of change of true anomaly
+    %
+    % nu: True anomaly (radians)
+    % dt: Time step (s)
+    %
     % Michael Gapczynski
     %-----------------------------------------------
 
