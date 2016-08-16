@@ -26,8 +26,7 @@ function [PSolar, solarArray] = getSolarPower(solarArray, date, dt, tf, pos, q)
     for i = 1:numel(solarArray)
         sp = solarArray{i};
         spN = repmat(sp.normal, length(pos), 1);
-        c = dot(sunB, spN, 2);
-        sp.thetaInc = atan2(vecnorm(cross(sunB, spN, 2)), c);
+        sp.thetaInc = getAngleBetween(sunB, spN);
         % Remove incidence angles that can't be illuminated
         sp.thetaInc(sp.thetaInc > pi/2) = NaN;
         % Remove incidence angles during eclipse
