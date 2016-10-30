@@ -1,4 +1,4 @@
-function [t, pos, vel, nu] = getOrbit(hA, hP, inc, w, bigOmega, m0, dt)
+function [t, pos, vel, nu, e] = getOrbit(hA, hP, inc, w, bigOmega, m0, dt)
     % Calculate the satellite's position and velocity of the specified orbit
     % for the provided time step
     %

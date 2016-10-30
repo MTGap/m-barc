@@ -31,12 +31,15 @@ w = 0;                      % Argument of perigee (radians)
 bigOmega = 0;               % Right ascension of the ascending node - RAAN (radians)
 m0 = 0;                     % Mean anomaly at epoch (radians)
 
-[t, pos, vel, nu] = getOrbit(hA, hP, inc, w, bigOmega, m0, dt);
+[t, pos, vel, nu, e] = getOrbit(hA, hP, inc, w, bigOmega, m0, dt);
 
 t = 0:dt:nOrbits*t(end) + (nOrbits-1)*dt;
 pos = repmat(pos, nOrbits, 1);
 vel = repmat(vel, nOrbits, 1);
+e = repmat(e, length(t), 1);
 nu = repmat(nu, nOrbits, 1);
+nudot = getNuDot(nu, dt);
+sun = getSunEphemeris(date, dt, t(end));
 
 % Initial quaternion
 bz =  vel(1,:)/norm(vel(1,:));
@@ -46,7 +49,9 @@ q0 = getQuaternion([bx; by; bz]);
 
 % Initial angular velocities in body frame
 w0 = [0.01 0.01 0.01];
-[q, w, tau] = propagateAttitude(sc, t, dt, q0, w0);
+torqueFuncs = {@getGravityGradient {e nu nudot},
+               @getSolarRadiationPressure {pos sun}};
+[q, w, tau] = propagateAttitude(sc, t, dt, q0, w0, torqueFuncs);
 
 Lt = length(t);
 d = zeros(Lt, 1);
